@@ -1,0 +1,159 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+#### Functions
+
+The following function is the function which will be used to get the mode of the data
+
+```{r}
+mymode <- function(x){
+  xtable <- table(x)
+  idx <- xtable == max(xtable)
+  names(xtable)[idx]
+}
+```
+
+Read in the data from the csv file
+
+```{r}
+service_provider_data <- read.csv("./eurocomPHONEchurners.csv")
+```
+
+Display the data
+
+```{r}
+service_provider_data
+```
+
+First thing to do is to print out the data summary.
+
+```{r}
+summary(service_provider_data)
+```
+
+### Identify null values 
+
+The summary data can be used to identify the columns which contain null values. 
+
+The columns with null values are:
+
+* MINUTES_3MONTHS_AGO (3 records)
+* CUST_MOS (3 records)
+* TOT_MINUTES_USAGE (4 records)
+* PHONE_PLAN (4 records)
+* EDUCATION (8 records) 
+
+##### Addressing the issues of the missing values. 
+
+For the numeric values they will be replaced with median value for the columns
+
+**MINUTES_3MONTHS_AGO**
+```{r}
+median(service_provider_data$MINUTES_3MONTHS_AGO, na.rm = TRUE)
+```
+
+```{r}
+MINUTES_3MONTHS_AGO_median <- median(service_provider_data$MINUTES_3MONTHS_AGO, na.rm = TRUE)
+```
+
+```{r}
+service_provider_data$MINUTES_3MONTHS_AGO[is.na(service_provider_data$MINUTES_3MONTHS_AGO)] <- MINUTES_3MONTHS_AGO_median 
+```
+
+
+**CUST_MOS**
+```{r}
+median(service_provider_data$CUST_MOS, na.rm = TRUE)
+```
+
+```{r}
+CUST_MOS_median <- median(service_provider_data$CUST_MOS, na.rm = TRUE)
+```
+
+```{r}
+service_provider_data$CUST_MOS[is.na(service_provider_data$CUST_MOS)] <- CUST_MOS_median 
+```
+
+
+**TOT_MINUTES_USAGE**
+```{r}
+median(service_provider_data$TOT_MINUTES_USAGE, na.rm = TRUE)
+```
+
+```{r}
+TOT_MINUTES_USAGE_median <- median(service_provider_data$TOT_MINUTES_USAGE, na.rm = TRUE)
+```
+
+```{r}
+service_provider_data$TOT_MINUTES_USAGE[is.na(service_provider_data$TOT_MINUTES_USAGE)] <- TOT_MINUTES_USAGE_median 
+```
+
+
+**PHONE_PLAN**
+
+The first thing to do was to ceate a data frame which is comprised of the gender and phone plan
+
+```{r}
+
+  temp <- data.frame(service_provider_data$PHONE_PLAN, service_provider_data$GENDER)
+
+```
+
+
+The data frame is then filtered again so it just contains data for record for male records
+
+```{r}
+  phone_plan_male_subset <- temp[temp$service_provider_data.GENDER == 'M', 1]
+```
+
+
+The mode of the phone plan is stored formale records
+
+```{r}
+
+  phone_plan_male_mode <- mymode(phone_plan_male_subset)
+
+```
+
+The data frame is then filtered again so it just contains data for record for female records
+
+```{r}
+  phone_plan_female_subset <- temp[temp$service_provider_data.GENDER == 'F', 1]
+```
+
+
+```{r}
+
+  phone_plan_female_mode <- mymode(phone_plan_female_subset)
+
+```
+
+
+We then find the indexes of the phone plan records with empty values
+
+```{r}
+  no_phone_plans <- which(service_provider_data$PHONE_PLAN == "")
+```
+
+
+```{r}
+for (index in no_phone_plans)
+{
+  if (service_provider_data$GENDER[index] == 'M') 
+  {
+    service_provider_data$PHONE_PLAN[index] <- phone_plan_male_mode
+  } 
+  else 
+  {
+    service_provider_data$PHONE_PLAN[index] <- phone_plan_female_mode
+  }
+}
+
+```
+
+
+
+
+
