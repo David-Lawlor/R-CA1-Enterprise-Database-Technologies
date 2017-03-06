@@ -97,15 +97,24 @@ The first thing to do was to ceate a data frame which is comprised of the gender
 
 ```{r}
 
-  temp <- data.frame(service_provider_data$PHONE_PLAN, service_provider_data$GENDER)
+  phone_plan_gender_subset <- data.frame(service_provider_data$PHONE_PLAN, service_provider_data$GENDER)
 
 ```
 
+```{r}
+
+  phone_plan_gender_subset[1:10,]
+
+```
 
 The data frame is then filtered again so it just contains data for record for male records
 
 ```{r}
   phone_plan_male_subset <- temp[temp$service_provider_data.GENDER == 'M', 1]
+```
+
+```{r}
+  phone_plan_male_subset[1:10]
 ```
 
 
@@ -117,10 +126,21 @@ The mode of the phone plan is stored formale records
 
 ```
 
+```{r}
+
+  phone_plan_male_mode
+
+```
+
+
 The data frame is then filtered again so it just contains data for record for female records
 
 ```{r}
   phone_plan_female_subset <- temp[temp$service_provider_data.GENDER == 'F', 1]
+```
+
+```{r}
+  phone_plan_female_subset[1:10]
 ```
 
 
@@ -130,11 +150,21 @@ The data frame is then filtered again so it just contains data for record for fe
 
 ```
 
+```{r}
+
+  phone_plan_female_mode
+
+```
+
 
 We then find the indexes of the phone plan records with empty values
 
 ```{r}
   no_phone_plans <- which(service_provider_data$PHONE_PLAN == "")
+```
+
+```{r}
+  service_provider_data[no_phone_plans,]
 ```
 
 
@@ -152,6 +182,132 @@ for (index in no_phone_plans)
 }
 
 ```
+
+```{r}
+  service_provider_data$PHONE_PLAN[no_phone_plans]
+```
+
+**EDUCATION**
+The first thing to do was to ceate a data frame which is comprised of the gender and education
+
+```{r}
+
+  education_gender_subset <- data.frame(service_provider_data$EDUCATION, service_provider_data$GENDER)
+
+```
+
+```{r}
+
+  education_gender_subset[1:10,]
+
+```
+
+The data frame is then filtered again so it just contains data for record for male records
+
+```{r}
+  no_education_male_subset <- education_gender_subset[education_gender_subset$service_provider_data.GENDER == 'M', 1]
+```
+
+```{r}
+  no_education_male_subset[1:10]
+```
+
+
+The mode of the phone plan is stored formale records
+
+```{r}
+  no_education_male_mode <- mymode(no_education_male_subset)
+```
+
+```{r}
+  no_education_male_mode
+```
+
+The data frame is then filtered again so it just contains data for record for female records
+
+```{r}
+  no_education_female_subset <- education_gender_subset[education_gender_subset$service_provider_data.GENDER == 'F', 1]
+```
+
+
+```{r}
+
+  no_education_female_mode <- mymode(no_education_female_subset)
+
+```
+
+```{r}
+
+  no_education_female_mode
+
+```
+
+
+We then find the indexes of the phone plan records with empty values
+
+```{r}
+  no_education <- which(service_provider_data$EDUCATION == "")
+```
+
+```{r}
+  service_provider_data[no_education,]
+```
+
+
+
+```{r}
+for (index in no_education)
+{
+  if (service_provider_data$GENDER[index] == 'M') 
+  {
+    service_provider_data$EDUCATION[index] <- no_education_male_mode
+  } 
+  else 
+  {
+    service_provider_data$EDUCATION[index] <- no_education_female_mode
+  }
+}
+```
+
+```{r}
+service_provider_data$EDUCATION[no_education]
+```
+
+```{r}
+summary(service_provider_data)
+```
+
+
+```{r}
+service_provider_data$INCOME <- cut(service_provider_data$INCOME, breaks=c(0,37999,87999,Inf), labels=c("low income","medium income","high income"))
+```
+
+```{r}
+service_provider_data[1:10,
+                      ]
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
