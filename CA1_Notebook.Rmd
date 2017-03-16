@@ -1,9 +1,21 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
-#### Functions
+REFERENCES:
+http://stackoverflow.com/questions/1330989/rotating-and-spacing-axis-labels-in-ggplot2
+http://stackoverflow.com/questions/30057765/histogram-ggplot-show-count-label-for-each-bin-for-each-category
+
+---
+```{r}
+library(ggplot2)
+```
+
+# Functions
 
 The following function is the function which will be used to get the mode of the data
 
@@ -15,25 +27,40 @@ mymode <- function(x){
 }
 ```
 
-Read in the data from the csv file
+# Read in the data from the csv file
 
 ```{r}
-service_provider_data <- read.csv("./eurocomPHONEchurners.csv")
-```
-
-Display the data
-
-```{r}
-service_provider_data
+churn_data <- read.csv("./eurocomPHONEchurners.csv")
 ```
 
 First thing to do is to print out the data summary.
 
 ```{r}
-summary(service_provider_data)
+summary(churn_data)
 ```
 
-### Identify null values 
+# Preprocess the data
+
+
+## Identify duplicate values
+ref: http://www.cookbook-r.com/Manipulating_data/Finding_and_removing_duplicate_records/
+
+```{r}
+churn_data[duplicated(churn_data$CUST_ID), ]
+```
+
+## Remove the duplicates
+```{r}
+churn_data <- churn_data[!duplicated(churn_data$CUST_ID), ]
+```
+
+
+```{r}
+nrow(churn_data)
+```
+
+
+## Identify null values 
 
 The summary data can be used to identify the columns which contain null values. 
 
@@ -45,98 +72,82 @@ The columns with null values are:
 * PHONE_PLAN (4 records)
 * EDUCATION (8 records) 
 
-##### Addressing the issues of the missing values. 
+## Addressing the issues of the missing values. 
 
 For the numeric values they will be replaced with median value for the columns
 
-**MINUTES_3MONTHS_AGO**
+### MINUTES_3MONTHS_AGO
 ```{r}
-median(service_provider_data$MINUTES_3MONTHS_AGO, na.rm = TRUE)
+median(churn_data$MINUTES_3MONTHS_AGO, na.rm = TRUE)
 ```
 
 ```{r}
-MINUTES_3MONTHS_AGO_median <- median(service_provider_data$MINUTES_3MONTHS_AGO, na.rm = TRUE)
+MINUTES_3MONTHS_AGO_median <- median(churn_data$MINUTES_3MONTHS_AGO, na.rm = TRUE)
 ```
 
 ```{r}
-service_provider_data$MINUTES_3MONTHS_AGO[is.na(service_provider_data$MINUTES_3MONTHS_AGO)] <- MINUTES_3MONTHS_AGO_median 
+churn_data$MINUTES_3MONTHS_AGO[is.na(churn_data$MINUTES_3MONTHS_AGO)] <- MINUTES_3MONTHS_AGO_median 
 ```
 
 
-**CUST_MOS**
+### CUST_MOS
 ```{r}
-median(service_provider_data$CUST_MOS, na.rm = TRUE)
-```
-
-```{r}
-CUST_MOS_median <- median(service_provider_data$CUST_MOS, na.rm = TRUE)
+median(churn_data$CUST_MOS, na.rm = TRUE)
 ```
 
 ```{r}
-service_provider_data$CUST_MOS[is.na(service_provider_data$CUST_MOS)] <- CUST_MOS_median 
-```
-
-
-**TOT_MINUTES_USAGE**
-```{r}
-median(service_provider_data$TOT_MINUTES_USAGE, na.rm = TRUE)
+CUST_MOS_median <- median(churn_data$CUST_MOS, na.rm = TRUE)
 ```
 
 ```{r}
-TOT_MINUTES_USAGE_median <- median(service_provider_data$TOT_MINUTES_USAGE, na.rm = TRUE)
+churn_data$CUST_MOS[is.na(churn_data$CUST_MOS)] <- CUST_MOS_median 
+```
+
+### TOT_MINUTES_USAGE
+```{r}
+median(churn_data$TOT_MINUTES_USAGE, na.rm = TRUE)
 ```
 
 ```{r}
-service_provider_data$TOT_MINUTES_USAGE[is.na(service_provider_data$TOT_MINUTES_USAGE)] <- TOT_MINUTES_USAGE_median 
+TOT_MINUTES_USAGE_median <- median(churn_data$TOT_MINUTES_USAGE, na.rm = TRUE)
 ```
 
+```{r}
+churn_data$TOT_MINUTES_USAGE[is.na(churn_data$TOT_MINUTES_USAGE)] <- TOT_MINUTES_USAGE_median 
+```
 
-**PHONE_PLAN**
+### PHONE_PLAN
 
 The first thing to do was to ceate a data frame which is comprised of the gender and phone plan
 
 ```{r}
 
-  phone_plan_gender_subset <- data.frame(service_provider_data$PHONE_PLAN, service_provider_data$GENDER)
-
-```
-
-```{r}
-
-  phone_plan_gender_subset[1:10,]
+  phone_plan_gender_subset <- data.frame(churn_data$PHONE_PLAN, churn_data$GENDER)
 
 ```
 
 The data frame is then filtered again so it just contains data for record for male records
 
 ```{r}
-  phone_plan_male_subset <- temp[temp$service_provider_data.GENDER == 'M', 1]
+  phone_plan_male_subset <- phone_plan_gender_subset[phone_plan_gender_subset$churn_data.GENDER == 'M', 1]
 ```
 
 ```{r}
   phone_plan_male_subset[1:10]
 ```
 
-
 The mode of the phone plan is stored formale records
 
 ```{r}
 
-  phone_plan_male_mode <- mymode(phone_plan_male_subset)
+  print(phone_plan_male_mode <- mymode(phone_plan_male_subset))
 
 ```
-
-```{r}
-
-  phone_plan_male_mode
-
-```
-
 
 The data frame is then filtered again so it just contains data for record for female records
 
 ```{r}
-  phone_plan_female_subset <- temp[temp$service_provider_data.GENDER == 'F', 1]
+  phone_plan_female_subset <- phone_plan_gender_subset[phone_plan_gender_subset$churn_data.GENDER == 'F', 1]
 ```
 
 ```{r}
@@ -145,71 +156,57 @@ The data frame is then filtered again so it just contains data for record for fe
 
 
 ```{r}
-
-  phone_plan_female_mode <- mymode(phone_plan_female_subset)
-
-```
-
-```{r}
-
-  phone_plan_female_mode
-
+  print(phone_plan_female_mode <- mymode(phone_plan_female_subset))
 ```
 
 
 We then find the indexes of the phone plan records with empty values
 
 ```{r}
-  no_phone_plans <- which(service_provider_data$PHONE_PLAN == "")
-```
-
-```{r}
-  service_provider_data[no_phone_plans,]
+  no_phone_plans <- which(churn_data$PHONE_PLAN == "")
 ```
 
 
 ```{r}
 for (index in no_phone_plans)
 {
-  if (service_provider_data$GENDER[index] == 'M') 
+  if (churn_data$GENDER[index] == 'M') 
   {
-    service_provider_data$PHONE_PLAN[index] <- phone_plan_male_mode
+    churn_data$PHONE_PLAN[index] <- phone_plan_male_mode
   } 
   else 
   {
-    service_provider_data$PHONE_PLAN[index] <- phone_plan_female_mode
+    churn_data$PHONE_PLAN[index] <- phone_plan_female_mode
   }
 }
 
 ```
 
 ```{r}
-  service_provider_data$PHONE_PLAN[no_phone_plans]
+  churn_data$PHONE_PLAN[no_phone_plans]
 ```
 
-**EDUCATION**
+```{r}
+churn_data$PHONE_PLAN <- droplevels(churn_data$PHONE_PLAN)
+```
+
+```{r}
+summary(churn_data$PHONE_PLAN)
+```
+
+### EDUCATION
 The first thing to do was to ceate a data frame which is comprised of the gender and education
 
 ```{r}
 
-  education_gender_subset <- data.frame(service_provider_data$EDUCATION, service_provider_data$GENDER)
-
-```
-
-```{r}
-
-  education_gender_subset[1:10,]
+  education_gender_subset <- data.frame(churn_data$EDUCATION, churn_data$GENDER)
 
 ```
 
 The data frame is then filtered again so it just contains data for record for male records
 
 ```{r}
-  no_education_male_subset <- education_gender_subset[education_gender_subset$service_provider_data.GENDER == 'M', 1]
-```
-
-```{r}
-  no_education_male_subset[1:10]
+  no_education_male_subset <- education_gender_subset[education_gender_subset$churn_data.GENDER == 'M', 1]
 ```
 
 
@@ -226,7 +223,7 @@ The mode of the phone plan is stored formale records
 The data frame is then filtered again so it just contains data for record for female records
 
 ```{r}
-  no_education_female_subset <- education_gender_subset[education_gender_subset$service_provider_data.GENDER == 'F', 1]
+  no_education_female_subset <- education_gender_subset[education_gender_subset$churn_data.GENDER == 'F', 1]
 ```
 
 
@@ -246,63 +243,900 @@ The data frame is then filtered again so it just contains data for record for fe
 We then find the indexes of the phone plan records with empty values
 
 ```{r}
-  no_education <- which(service_provider_data$EDUCATION == "")
+  no_education <- which(churn_data$EDUCATION == "")
 ```
-
-```{r}
-  service_provider_data[no_education,]
-```
-
-
 
 ```{r}
 for (index in no_education)
 {
-  if (service_provider_data$GENDER[index] == 'M') 
+  if (churn_data$GENDER[index] == 'M') 
   {
-    service_provider_data$EDUCATION[index] <- no_education_male_mode
+    churn_data$EDUCATION[index] <- no_education_male_mode
   } 
   else 
   {
-    service_provider_data$EDUCATION[index] <- no_education_female_mode
+    churn_data$EDUCATION[index] <- no_education_female_mode
   }
 }
 ```
 
 ```{r}
-service_provider_data$EDUCATION[no_education]
+churn_data$EDUCATION[no_education]
 ```
 
 ```{r}
-summary(service_provider_data)
+churn_data$EDUCATION <- droplevels(churn_data$EDUCATION)
+```
+
+```{r}
+summary(churn_data)
 ```
 
 
 ```{r}
-service_provider_data$INCOME <- cut(service_provider_data$INCOME, breaks=c(0,37999,87999,Inf), labels=c("low income","medium income","high income"))
+churn_data$INCOME <- cut(churn_data$INCOME, breaks=c(0,38000,88000,Inf), right = FALSE, labels=c("low income","medium income","high income"))
+```
+
+# Predictor Information
+
+## CUST_ID
+
+Unique Account Number that identifies an account holder
+
++-------------------+-------------------------------------------+
+| Predictor         | CUST_ID
++===================+===========================================+
+| attribute type    | Nominal                                 ` |
++-------------------+-------------------------------------------+
+| Max               | `r max(churn_data$CUST_ID)`               |
++-------------------+-------------------------------------------+
+| Min               | `r min(churn_data$CUST_ID)`               |
++-------------------+-------------------------------------------+
+
+
+## AREA_CODE
+
+Geographical area account holder resides
+
++-------------------+-------------------------------------------+
+| Predictor         | AREA_CODE
++===================+===========================================+
+| attribute type    | Nominal                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$AREA_CODE)`          |
++-------------------+-------------------------------------------+
+
+
+```{r}
+plot_data <- data.frame(table(churn_data$AREA_CODE, churn_data$CHURNER))
+colnames(plot_data) <- c("Area_Code", "Churned", "Count" )
+ggplot(data=plot_data, aes(x = Area_Code, y = Count, fill = Churned, label = Count)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+
+## LONGDIST_FLAG
+
+Whether has signed up for the off-peak long distance call package 
+
++-------------------+-------------------------------------------+
+| Predictor         | LONGDIST_FLAG
++===================+===========================================+
+| attribute type    | Nominal                       |
++-------------------+-------------------------------------------+
+| %Missing Values   |                     0                     |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$LONGDIST_FLAG)`|
++-------------------+-------------------------------------------+
+
+```{r}
+plot_data <- data.frame(table(churn_data$LONGDIST_FLAG, churn_data$CHURNER))
+colnames(plot_data) <- c("LONGDIST_FLAG", "Churned", "Count" )
+ggplot(data=plot_data, aes(x = LONGDIST_FLAG, y = Count, fill = Churned, label = Count)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+## CALLWAITING_FLAG
+
+Whether the customer has call waiting
+
++-------------------+-------------------------------------------+
+| Predictor         | CALLWAITING_FLAG
++===================+===========================================+
+| attribute type    | Nominal                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$CALLWAITING_FLAG)` |
++-------------------+-------------------------------------------+
+
+```{r}
+plot_data <- data.frame(table(churn_data$CALLWAITING_FLAG, churn_data$CHURNER))
+colnames(plot_data) <- c("CALLWAITING_FLAG", "Churned", "Count")
+ggplot(data=plot_data, aes(x = CALLWAITING_FLAG, y = Count, fill = Churned, label = Count)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+## VOICEMAIL_FLAG
+
+Whether the customer has voice mail
+
++-------------------+-------------------------------------------+
+| Predictor         | VOICEMAIL_FLAG
++===================+===========================================+
+| attribute type    | Nominal                              |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$VOICEMAIL_FLAG)` |
++-------------------+-------------------------------------------+
+
+```{r}
+plot_data <- data.frame(table(churn_data$VOICEMAIL_FLAG, churn_data$CHURNER))
+colnames(plot_data) <- c("VOICEMAIL_FLAG", "Churned", "Count" )
+ggplot(data=plot_data, aes(x = VOICEMAIL_FLAG, y = Count, fill = Churned, label = Count)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+## MOBILE_PLAN
+
+Has the customer signed up to the mobile phone plan
+
++-------------------+-------------------------------------------+
+| Predictor         | MOBILE_PLAN
++===================+===========================================+
+| attribute type    | Nominal                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$MOBILE_PLAN)` |
++-------------------+-------------------------------------------+
+
+```{r}
+plot_data <- data.frame(table(churn_data$MOBILE_PLAN, churn_data$CHURNER))
+colnames(plot_data) <- c("MOBILE_PLAN", "Churned", "Count" )
+ggplot(data=plot_data, aes(x = MOBILE_PLAN, y = Count, fill = Churned, label = Count)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+## CONVERGENT_BILLING
+
+All service charges consolidated onto one bill
+
++-------------------+-------------------------------------------+
+| Predictor         | CONVERGENT_BILLING
++===================+===========================================+
+| attribute type    | Nominal                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$CONVERGENT_BILLING)` |
++-------------------+-------------------------------------------+
+
+```{r}
+plot_data <- data.frame(table(churn_data$CONVERGENT_BILLING, churn_data$CHURNER))
+colnames(plot_data) <- c("CONVERGENT_BILLING", "Churned", "Count" )
+ggplot(data=plot_data, aes(x = CONVERGENT_BILLING, y = Count, fill = Churned, label = Count)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+## GENDER
+
+Account holder's gender
+
++-------------------+-------------------------------------------+
+| Predictor         | GENDER
++===================+===========================================+
+| attribute type    | Nominal                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$GENDER)` |
++-------------------+-------------------------------------------+
+
+```{r}
+plot_data <- data.frame(table(churn_data$GENDER, churn_data$CHURNER))
+colnames(plot_data) <- c("GENDER", "Churned", "Count" )
+ggplot(data=plot_data, aes(x = GENDER, y = Count, fill = Churned, label = Count)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+## INCOME
+
+Account holder's annual income (€)
+
++-------------------+-------------------------------------------+
+| Predictor         | INCOME
++===================+===========================================+
+| attribute type    | Ordinal                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$INCOME)` |
++-------------------+-------------------------------------------+
+
+```{r}
+plot_data <- data.frame(table(churn_data$INCOME, churn_data$CHURNER))
+colnames(plot_data) <- c("INCOME", "Churned", "Count" )
+ggplot(data=plot_data, aes(x = INCOME, y = Count, fill = Churned, label = Count)) + 
+  geom_histogram(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+## PHONE_PLAN
+
+The phone plan the customer has signed up for national, euro-zone, international (outside Euro-zone) and promo_plan (signed up to the promotional plan)
+
++-------------------+-------------------------------------------+
+| Predictor         | PHONE_PLAN
++===================+===========================================+
+| attribute type    | Nominal                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$PHONE_PLAN)` |
++-------------------+-------------------------------------------+
+
+```{r}
+plot_data <- data.frame(table(churn_data$PHONE_PLAN, churn_data$CHURNER))
+colnames(plot_data) <- c("PHONE_PLAN", "Churned", "Count" )
+ggplot(data=plot_data, aes(x = PHONE_PLAN, y = Count, fill = Churned, label = Count)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+## EDUCATION
+
+Highest Level of education attainment the account holder has achieved
+
++-------------------+-------------------------------------------+
+| Predictor         | EDUCATION
++===================+===========================================+
+| attribute type    | Nominal                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$EDUCATION)` |
++-------------------+-------------------------------------------+
+
+
+```{r}
+plot_data <- data.frame(table(churn_data$EDUCATION, churn_data$CHURNER))
+colnames(plot_data) <- c("EDUCATION", "Churned", "Count" )
+ggplot(data=plot_data, aes(x = EDUCATION, y = Count, fill = Churned, label = Count)) + 
+  geom_bar(stat = "identity") + 
+  geom_text(size = 3, position = position_stack(vjust = 0.5))
+```
+
+## MINUTES_CURR_MONTH
+
+Phone Minutes currently for current months (to the time the data was extracted)
+
++-------------------+-------------------------------------------+
+| Predictor         | MINUTES_CURR_MONTH
++===================+===========================================+
+| attribute type    | Numeric                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Max               | `r max(churn_data$MINUTES_CURR_MONTH)`    |
++-------------------+-------------------------------------------+
+| Min               | `r min(churn_data$MINUTES_CURR_MONTH)`    |
++-------------------+-------------------------------------------+
+| Mean              | `r mean(churn_data$MINUTES_CURR_MONTH)`   |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$MINUTES_CURR_MONTH)` |
++-------------------+-------------------------------------------+
+| median            | `r median(churn_data$MINUTES_CURR_MONTH)` |
++-------------------+-------------------------------------------+
+| Standard deviation| `r sd(churn_data$MINUTES_CURR_MONTH)`     |
++-------------------+-------------------------------------------+
+
+### MINUTES_CURR_MONTH Skewness
+
+```{r}
+(3 * (mean(churn_data$MINUTES_PREV_MONTH) - median(churn_data$MINUTES_PREV_MONTH)))/ sd(churn_data$MINUTES_PREV_MONTH)
+```
+
+
+```{r}
+plot_data <- data.frame(table(churn_data$MINUTES_CURR_MONTH, churn_data$CHURNER))
+colnames(plot_data) <- c("MINUTES_CURR_MONTH", "CHURNER", "COUNT")
+ggplot(data=plot_data, aes(x = MINUTES_CURR_MONTH, y=COUNT, fill = CHURNER, label=COUNT)) +
+  geom_histogram(stat="identity", width = 1) +
+  geom_text(size = 2, position = position_stack(vjust = 0.5))+ 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+## MINUTES_PREV_MONTH
+
+Phone Minutes used in the previous month
+
++-------------------+-------------------------------------------+
+| Predictor         | MINUTES_PREV_MONTH
++===================+===========================================+
+| attribute type    | Numerical                       |
++-------------------+-------------------------------------------+
+| %Missing Values   |                                     |
++-------------------+-------------------------------------------+
+| Max               | `r max(churn_data$MINUTES_PREV_MONTH)`    |
++-------------------+-------------------------------------------+
+| Min               | `r min(churn_data$MINUTES_PREV_MONTH)`    |
++-------------------+-------------------------------------------+
+| Mean              | `r mean(churn_data$MINUTES_PREV_MONTH)`   |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$MINUTES_PREV_MONTH)` |
++-------------------+-------------------------------------------+
+| median            | `r median(churn_data$MINUTES_PREV_MONTH)` |
++-------------------+-------------------------------------------+
+
+### MINUTES_PREV_MONTH Skewness
+
+```{r}
+(3 * (mean(churn_data$MINUTES_PREV_MONTH) - median(churn_data$MINUTES_PREV_MONTH)))/ sd(churn_data$MINUTES_PREV_MONTH)
 ```
 
 ```{r}
-service_provider_data[1:10,
-                      ]
+plot_data <- data.frame(table(churn_data$MINUTES_PREV_MONTH, churn_data$CHURNER))
+colnames(plot_data) <- c("MINUTES_PREV_MONTH", "CHURNER", "COUNT")
+ggplot(data=plot_data, aes(x = MINUTES_PREV_MONTH, y=COUNT, fill = CHURNER, label=COUNT)) +
+  geom_histogram(stat="identity", width = 1) +
+  geom_text(size = 2, position = position_stack(vjust = 0.5))+ 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+## MINUTES_3MONTHS_AGO
+
+Phone Minutes used in the 3 month PREVIOUS 
+
++-------------------+-------------------------------------------+
+| Predictor         | MINUTES_3MONTHS_AGO
++===================+===========================================+
+| attribute type    | Numerical                       |
++-------------------+-------------------------------------------+
+| %Missing Values   |                                          |
++-------------------+-------------------------------------------+
+| Max               | `r max(churn_data$MINUTES_3MONTHS_AGO)`   |
++-------------------+-------------------------------------------+
+| Min               | `r min(churn_data$MINUTES_3MONTHS_AGO)`   |
++-------------------+-------------------------------------------+
+| Mean              | `r mean(churn_data$MINUTES_3MONTHS_AGO)`  |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$MINUTES_3MONTHS_AGO)`|
++-------------------+-------------------------------------------+
+| median            | `r median(churn_data$MINUTES_3MONTHS_AGO)`|
++-------------------+-------------------------------------------+
+
+### MINUTES_3MONTHS_AGO Skewness
+
+Right-skewness data – Is positive, as mean is greater than the median
+```{r}
+(3 * (mean(churn_data$MINUTES_3MONTHS_AGO) - median(churn_data$MINUTES_3MONTHS_AGO)))/ sd(churn_data$MINUTES_3MONTHS_AGO)
+```
+
+```{r}
+plot_data <- data.frame(table(churn_data$MINUTES_3MONTHS_AGO, churn_data$CHURNER))
+colnames(plot_data) <- c("MINUTES_3MONTHS_AGO", "CHURNER", "COUNT")
+ggplot(data=plot_data, aes(x = MINUTES_3MONTHS_AGO, y=COUNT, fill = CHURNER, label=COUNT)) +
+  geom_histogram(stat="identity", width = 1) +
+  geom_text(size = 2, position = position_stack(vjust = 0.5))+ 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+## CUST_MOS
+
+The number of continuous months the Customer is with the provider
+
++-------------------+-------------------------------------------+
+| Predictor         | CUST_MOS
++===================+===========================================+
+| attribute type    | Numerical                      |
++-------------------+-------------------------------------------+
+| %Missing Values   |                     0                     |
++-------------------+-------------------------------------------+
+| Max               | `r max(churn_data$CUST_MOS)`   |
++-------------------+-------------------------------------------+
+| Min               | `r min(churn_data$CUST_MOS)`   |
++-------------------+-------------------------------------------+
+| Mean              | `r mean(churn_data$CUST_MOS)`  |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$CUST_MOS)`|
++-------------------+-------------------------------------------+
+| median            | `r median(churn_data$CUST_MOS)`|
++-------------------+-------------------------------------------+
+
+### CUST_MOS Skewness
+
+Right-skewness data – Is positive, as mean is greater than the median
+```{r}
+(3 * (mean(churn_data$CUST_MOS) - median(churn_data$CUST_MOS)))/ sd(churn_data$CUST_MOS)
 ```
 
 
+```{r}
+plot_data <- data.frame(table(churn_data$CUST_MOS, churn_data$CHURNER))
+colnames(plot_data) <- c("CUST_MOS", "CHURNER", "COUNT")
+ggplot(data=plot_data, aes(x = CUST_MOS, y=COUNT, fill = CHURNER, label=COUNT)) +
+  geom_histogram(stat="identity", width = 1) +
+  geom_text(size = 2, angle = 90, position = position_stack(vjust = 0.5))+ 
+  theme(axis.text.x = element_text(size=6, angle = 90, hjust = .5))
+``` 
+
+## TOT_MINUTES_USAGE
+
+The total number of minutes used to date
+
++-------------------+-------------------------------------------+-------------------+-------------------------------------------+
+| Predictor         | TOT_MINUTES_USAGE                         | Predictor         | TOT_MINUTES_USAGE
++===================+===========================================+===================+===========================================+
+| attribute type    | Numeric                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Max               | `r max(churn_data$TOT_MINUTES_USAGE)`    |
++-------------------+-------------------------------------------+
+| Min               | `r min(churn_data$TOT_MINUTES_USAGE)`    |
++-------------------+-------------------------------------------+
+| Mean              | `r mean(churn_data$TOT_MINUTES_USAGE)`   |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$TOT_MINUTES_USAGE)` |
++-------------------+-------------------------------------------+
+| median            | `r median(churn_data$TOT_MINUTES_USAGE)` |
++-------------------+-------------------------------------------+
+| Standard deviation| `r sd(churn_data$TOT_MINUTES_USAGE)`     |
++-------------------+-------------------------------------------+
 
 
+### TOT_MINUTES_USAGE Skewness
+
+Right-skewness data – Is positive, as mean is greater than the median
+```{r}
+(3 * (mean(churn_data$TOT_MINUTES_USAGE) - median(churn_data$TOT_MINUTES_USAGE)))/ sd(churn_data$TOT_MINUTES_USAGE)
+```
 
 
+```{r}
+plot_data <- data.frame(table(churn_data$TOT_MINUTES_USAGE, churn_data$CHURNER))
+colnames(plot_data) <- c("TOT_MINUTES_USAGE", "CHURNER", "COUNT")
+ggplot(data=plot_data, aes(x = TOT_MINUTES_USAGE, y=COUNT, fill = CHURNER, label=COUNT)) +
+  geom_histogram(stat="identity", width = 1) +
+  geom_text(size = 2, angle = 90, position = position_stack(vjust = 0.5))+ 
+  theme(axis.text.x = element_text(size=6, angle = 90, hjust = .5))
+``` 
 
 
+## NUM_LINES
+
+The number of fixed lines the customer has leased.
+
++-------------------+-------------------------------------------+
+| Predictor         | NUM_LINES
++===================+===========================================+
+| attribute type    | Numeric                                   |
++-------------------+-------------------------------------------+
+| %Missing Values   | 0%                                        |
++-------------------+-------------------------------------------+
+| Max               | `r max(churn_data$NUM_LINES)`    |
++-------------------+-------------------------------------------+
+| Min               | `r min(churn_data$NUM_LINES)`    |
++-------------------+-------------------------------------------+
+| Mean              | `r mean(churn_data$NUM_LINES)`   |
++-------------------+-------------------------------------------+
+| Mode              | `r mymode(churn_data$NUM_LINES)` |
++-------------------+-------------------------------------------+
+| median            | `r median(churn_data$NUM_LINES)` |
++-------------------+-------------------------------------------+
+| Standard deviation| `r sd(churn_data$NUM_LINES)`     |
++-------------------+-------------------------------------------+
+
+### NUM_LINES Skewness
+
+Right-skewness data – Is positive, as mean is greater than the median
+```{r}
+(3 * (mean(churn_data$NUM_LINES) - median(churn_data$NUM_LINES)))/ sd(churn_data$NUM_LINES)
+```
 
 
+```{r}
+plot_data <- data.frame(table(churn_data$NUM_LINES, churn_data$CHURNER))
+colnames(plot_data) <- c("NUM_LINES", "CHURNER", "COUNT")
+ggplot(data=plot_data, aes(x = NUM_LINES, y=COUNT, fill = CHURNER, label=COUNT)) +
+  geom_histogram(stat="identity", width = 1) +
+  geom_text(size = 2, position = position_stack(vjust = 0.5))+ 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+# Skewness for numeric data
+
+Right-skewness data – Is positive, as mean is greater than the median
+Left skewness data – Mean is smaller than the median, generating negative values
+Perfectly symmetric data – mean, median and mode are equal, so skewness is zero
 
 
+```{r}
+(3 * (mean(churn_data$MINUTES_3MONTHS_AGO) - median(churn_data$MINUTES_3MONTHS_AGO)))/ sd(churn_data$MINUTES_3MONTHS_AGO)
+```
+
+```{r}
+(3 * (mean(churn_data$MINUTES_PREV_MONTH) - median(churn_data$MINUTES_PREV_MONTH)))/ sd(churn_data$MINUTES_PREV_MONTH)
+```
+
+```{r}
+(3 * (mean(churn_data$MINUTES_CURR_MONTH) - median(churn_data$MINUTES_CURR_MONTH)))/ sd(churn_data$MINUTES_CURR_MONTH)
+```
+
+```{r}
+(3 * (mean(churn_data$TOT_MINUTES_USAGE) - median(churn_data$TOT_MINUTES_USAGE)))/ sd(churn_data$TOT_MINUTES_USAGE)
+```
+
+```{r}
+(3 * (mean(churn_data$NUM_LINES) - median(churn_data$NUM_LINES)))/ sd(churn_data$NUM_LINES)
+```
+
+```{r}
+(3 * (mean(churn_data$CUST_MOS) - median(churn_data$CUST_MOS)))/ sd(churn_data$CUST_MOS)
+```
 
 
+# Graphical methods to identify outliers
+
+## MINUTES_3MONTHS_AGO
+
+```{r}
+ggplot(data=churn_data, aes(x=CHURNER, y=MINUTES_3MONTHS_AGO))+ geom_boxplot()
+
+```
+
+## MINUTES_PREV_MONTH
+
+```{r}
+ggplot(data=churn_data, aes(x=CHURNER, y=MINUTES_PREV_MONTH))+ geom_boxplot()
+```
+
+## MINUTES_CURR_MONTH
+
+```{r}
+ggplot(data=churn_data, aes(x=CHURNER, y=MINUTES_CURR_MONTH))+ geom_boxplot()
+```
+
+## TOT_MINUTES_USAGE
+
+```{r}
+ggplot(data=churn_data, aes(x=CHURNER, y=TOT_MINUTES_USAGE))+ geom_boxplot()
+```
+
+## NUM_LINES
+
+```{r}
+ggplot(data=churn_data, aes(x=CHURNER, y=NUM_LINES))+ geom_boxplot()
+```
+
+## CUST_MOS
+
+```{r}
+ggplot(data=churn_data, aes(x=CHURNER, y=CUST_MOS))+ geom_boxplot()
+```
+
+# Mathematically identifying outliers
+
+Choose a numeric predictor variable that has possible outliers based on your analysis in 2 above. Use the
+IQR method and Z-Score Standardisation method to identify outliers. Discuss your findings.
+
+## IQR method
+
+```{r}
+minutesQuartileTolerance <- 1.5* IQR(churn_data$TOT_MINUTES_USAGE)
+minutesLowerQuantile <- quantile(churn_data$TOT_MINUTES_USAGE, 0.25)
+minutesUpperQuantile <- quantile(churn_data$TOT_MINUTES_USAGE, 0.75)
+
+print("lower outliers")
+churn_data$TOT_MINUTES_USAGE[churn_data$TOT_MINUTES_USAGE < (minutesLowerQuantile - minutesQuartileTolerance)]
+
+print("upper outliers")
+churn_data$TOT_MINUTES_USAGE[churn_data$TOT_MINUTES_USAGE > (minutesUpperQuantile + minutesQuartileTolerance)]
+
+```
+
+## zScore Standardisation method
+
+```{r}
+# zScore Standardisation
+zscore.TOT_MINUTES_USAGE <-(churn_data$TOT_MINUTES_USAGE - mean(churn_data$TOT_MINUTES_USAGE))/sd(churn_data$TOT_MINUTES_USAGE)
+summary(zscore.TOT_MINUTES_USAGE)
+```
+
+```{r}
+zscore.TOT_MINUTES_USAGE[zscore.TOT_MINUTES_USAGE < -3 | zscore.TOT_MINUTES_USAGE > 3]
+```
+
+# Correcting skewness
+
+```{r}
+# calculate skewness
+TOT_MINUTES_USAGESkewness <- (3 * (mean(churn_data$TOT_MINUTES_USAGE) - median(churn_data$TOT_MINUTES_USAGE)))/ sd(churn_data$TOT_MINUTES_USAGE)
+TOT_MINUTES_USAGESkewness
+```
+
+## Natural Log Transformation
+
+```{r}
+# Natural Log Transformation
+natlog.TOT_MINUTES_USAGE <- log(churn_data$TOT_MINUTES_USAGE[churn_data$TOT_MINUTES_USAGE > 0])
+
+# applying log function to skewness
+logTOT_MINUTES_USAGESkewness <- (3 * (mean(natlog.TOT_MINUTES_USAGE) - median(natlog.TOT_MINUTES_USAGE)))/ sd(natlog.TOT_MINUTES_USAGE)
+logTOT_MINUTES_USAGESkewness
+```
+
+## Square Root Transformation
+
+```{r}
+# Square Root Transformation
+sqrt.TOT_MINUTES_USAGE <- sqrt(churn_data$TOT_MINUTES_USAGE)
+# applying sqr root function to skewness
+
+sqrTOT_MINUTES_USAGESkewness <- (3 * (mean(sqrt.TOT_MINUTES_USAGE) - median(sqrt.TOT_MINUTES_USAGE)))/ sd(sqrt.TOT_MINUTES_USAGE)
+sqrTOT_MINUTES_USAGESkewness
+```
+
+## zScore Standardisation
+
+```{r}
+# zScore Standardisation
+zscore.TOT_MINUTES_USAGE <-(churn_data$TOT_MINUTES_USAGE - mean(churn_data$TOT_MINUTES_USAGE))/sd(churn_data$TOT_MINUTES_USAGE)
+
+# applying zScore function to skewness
+zscore.TOT_MINUTES_USAGE <- (3 * (mean(zscore.TOT_MINUTES_USAGE) - median(zscore.TOT_MINUTES_USAGE)))/ sd(zscore.TOT_MINUTES_USAGE)
+zscore.TOT_MINUTES_USAGE
+```
 
 
+# 2D Scatter plots to investigate correlation
 
+2D Scatter plots to investigate correlation between numeric variables
+
+## TOT_MINUTES_USAGE vs CUST_MOS
+
+```{r}
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=CUST_MOS)) +
+    geom_point() +
+    geom_smooth(method=lm)
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$CUST_MOS, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## TOT_MINUTES_USAGE vs MINUTES_CURR_MONTH
+
+```{r}
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_CURR_MONTH)) +
+    geom_point() +
+    geom_smooth(method=lm)
+
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_CURR_MONTH, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## TOT_MINUTES_USAGE vs MINUTES_PREV_MONTH
+
+```{r}
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_PREV_MONTH)) +
+    geom_point() +
+    geom_smooth(method=lm)
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_PREV_MONTH, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## TOT_MINUTES_USAGE vs MINUTES_3MONTHS_AGO
+
+```{r}
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_3MONTHS_AGO)) +
+    geom_point() +
+    geom_smooth(method=lm)
+
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_3MONTHS_AGO, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## TOT_MINUTES_USAGE vs NUM_LINES
+
+```{r}
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=NUM_LINES)) +
+    geom_point() +
+    geom_smooth(method=lm)
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## CUST_MOS vs MINUTES_CURR_MONTH
+
+```{r}
+ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_CURR_MONTH)) +
+    geom_point() +
+    geom_smooth(method=lm)
+
+```
+
+### Correlation
+
+```{r}
+cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_CURR_MONTH, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## CUST_MOS vs MINUTES_PREV_MONTH
+
+```{r}
+ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_PREV_MONTH)) +
+    geom_point() +
+    geom_smooth(method=lm)
+```
+### Correlation 
+
+```{r}
+cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_PREV_MONTH, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+
+## CUST_MOS vs MINUTES_3MONTHS_AGO
+
+```{r}
+ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_3MONTHS_AGO)) +
+    geom_point() +
+    geom_smooth(method=lm)
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$CUST_MOS, y=churn_data$MINUTES_3MONTHS_AGO, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## CUST_MOS vs NUM_LINES
+
+```{r}
+ggplot(churn_data, aes(x=CUST_MOS, y=NUM_LINES)) +
+    geom_point() +
+    geom_smooth(method=lm)
+
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$CUST_MOS, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## MINUTES_CURR_MONTH vs MINUTES_PREV_MONTH
+
+```{r}
+ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=MINUTES_PREV_MONTH)) +
+    geom_point() +
+    geom_smooth(method=lm)
+
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$MINUTES_CURR_MONTH, y=churn_data$MINUTES_PREV_MONTH, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## MINUTES_CURR_MONTH vs MINUTES_3MONTHS_AGO
+
+```{r}
+ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=MINUTES_3MONTHS_AGO)) +
+    geom_point() +
+    geom_smooth(method=lm)
+
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$MINUTES_CURR_MONTH, y=churn_data$MINUTES_3MONTHS_AGO, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## MINUTES_CURR_MONTH vs NUM_LINES
+
+```{r}
+ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=NUM_LINES)) +
+    geom_point() +
+    geom_smooth(method=lm)
+
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$MINUTES_CURR_MONTH, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## MINUTES_PREV_MONTH vs NUM_LINES
+
+```{r}
+ggplot(churn_data, aes(x=MINUTES_PREV_MONTH, y=NUM_LINES)) +
+    geom_point() +
+    geom_smooth(method=lm)
+
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$MINUTES_PREV_MONTH, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## MINUTES_PREV_MONTH vs MINUTES_3MONTHS_AGO
+
+```{r}
+ggplot(churn_data, aes(x=MINUTES_PREV_MONTH, y=MINUTES_3MONTHS_AGO)) +
+    geom_point() +
+    geom_smooth(method=lm)
+
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$MINUTES_PREV_MONTH, y=churn_data$MINUTES_3MONTHS_AGO, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
+
+## MINUTES_3MONTHS_AGO vs NUM_LINES
+
+```{r}
+ggplot(churn_data, aes(x=MINUTES_3MONTHS_AGO, y=NUM_LINES)) +
+    geom_point() +
+    geom_smooth(method=lm)
+```
+
+### Correlation 
+
+```{r}
+cor(x=churn_data$MINUTES_3MONTHS_AGO, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
+# http://www.statmethods.net/stats/correlations.html
+```
 
 
 
