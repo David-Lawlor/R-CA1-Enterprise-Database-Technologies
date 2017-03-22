@@ -1,9 +1,9 @@
 ---
 title: "R Notebook"
 output:
-  html_document: default
-  pdf_document: default
   word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 REFERENCES:
@@ -118,7 +118,7 @@ churn_data$TOT_MINUTES_USAGE[is.na(churn_data$TOT_MINUTES_USAGE)] <- TOT_MINUTES
 
 ### PHONE_PLAN
 
-The first thing to do was to ceate a data frame which is comprised of the gender and phone plan
+The first thing to do was to create a data frame which is comprised of the gender and phone plan
 
 ```{r}
 
@@ -136,7 +136,7 @@ The data frame is then filtered again so it just contains data for record for ma
   phone_plan_male_subset[1:10]
 ```
 
-The mode of the phone plan is stored formale records
+The mode of the phone plan is stored for male records
 
 ```{r}
 
@@ -195,7 +195,7 @@ summary(churn_data$PHONE_PLAN)
 ```
 
 ### EDUCATION
-The first thing to do was to ceate a data frame which is comprised of the gender and education
+The first thing to do was to create a data frame which is comprised of the gender and education
 
 ```{r}
 
@@ -210,7 +210,7 @@ The data frame is then filtered again so it just contains data for record for ma
 ```
 
 
-The mode of the phone plan is stored formale records
+The mode of the phone plan is stored for male records
 
 ```{r}
   no_education_male_mode <- mymode(no_education_male_subset)
@@ -541,7 +541,7 @@ Phone Minutes currently for current months (to the time the data was extracted)
 | Standard deviation| `r sd(churn_data$MINUTES_CURR_MONTH)`     |
 +-------------------+-------------------------------------------+
 
-### MINUTES_CURR_MONTH Skewness
+MINUTES_CURR_MONTH Skewness
 
 ```{r}
 (3 * (mean(churn_data$MINUTES_PREV_MONTH) - median(churn_data$MINUTES_PREV_MONTH)))/ sd(churn_data$MINUTES_PREV_MONTH)
@@ -579,7 +579,7 @@ Phone Minutes used in the previous month
 | median            | `r median(churn_data$MINUTES_PREV_MONTH)` |
 +-------------------+-------------------------------------------+
 
-### MINUTES_PREV_MONTH Skewness
+MINUTES_PREV_MONTH Skewness
 
 ```{r}
 (3 * (mean(churn_data$MINUTES_PREV_MONTH) - median(churn_data$MINUTES_PREV_MONTH)))/ sd(churn_data$MINUTES_PREV_MONTH)
@@ -615,7 +615,7 @@ Phone Minutes used in the 3 month PREVIOUS
 | median            | `r median(churn_data$MINUTES_3MONTHS_AGO)`|
 +-------------------+-------------------------------------------+
 
-### MINUTES_3MONTHS_AGO Skewness
+MINUTES_3MONTHS_AGO Skewness
 
 Right-skewness data – Is positive, as mean is greater than the median
 ```{r}
@@ -653,7 +653,7 @@ The number of continuous months the Customer is with the provider
 | median            | `r median(churn_data$CUST_MOS)`|
 +-------------------+-------------------------------------------+
 
-### CUST_MOS Skewness
+CUST_MOS Skewness
 
 Right-skewness data – Is positive, as mean is greater than the median
 ```{r}
@@ -667,16 +667,16 @@ colnames(plot_data) <- c("CUST_MOS", "CHURNER", "COUNT")
 ggplot(data=plot_data, aes(x = CUST_MOS, y=COUNT, fill = CHURNER, label=COUNT)) +
   geom_histogram(stat="identity", width = 1) +
   geom_text(size = 2, angle = 90, position = position_stack(vjust = 0.5))+ 
-  theme(axis.text.x = element_text(size=6, angle = 90, hjust = .5))
+  theme(axis.text.x = element_text(size=6, hjust = .5))
 ``` 
 
 ## TOT_MINUTES_USAGE
 
 The total number of minutes used to date
 
-+-------------------+-------------------------------------------+-------------------+-------------------------------------------+
-| Predictor         | TOT_MINUTES_USAGE                         | Predictor         | TOT_MINUTES_USAGE
-+===================+===========================================+===================+===========================================+
++-------------------+-------------------------------------------+
+| Predictor         | TOT_MINUTES_USAGE                         | 
++===================+===========================================+
 | attribute type    | Numeric                                   |
 +-------------------+-------------------------------------------+
 | %Missing Values   | 0%                                        |
@@ -695,7 +695,7 @@ The total number of minutes used to date
 +-------------------+-------------------------------------------+
 
 
-### TOT_MINUTES_USAGE Skewness
+TOT_MINUTES_USAGE Skewness
 
 Right-skewness data – Is positive, as mean is greater than the median
 ```{r}
@@ -737,7 +737,7 @@ The number of fixed lines the customer has leased.
 | Standard deviation| `r sd(churn_data$NUM_LINES)`     |
 +-------------------+-------------------------------------------+
 
-### NUM_LINES Skewness
+NUM_LINES Skewness
 
 Right-skewness data – Is positive, as mean is greater than the median
 ```{r}
@@ -831,7 +831,7 @@ ggplot(data=churn_data, aes(x=CHURNER, y=CUST_MOS))+ geom_boxplot()
 Choose a numeric predictor variable that has possible outliers based on your analysis in 2 above. Use the
 IQR method and Z-Score Standardisation method to identify outliers. Discuss your findings.
 
-## IQR method
+IQR method
 
 ```{r}
 minutesQuartileTolerance <- 1.5* IQR(churn_data$TOT_MINUTES_USAGE)
@@ -846,7 +846,7 @@ churn_data$TOT_MINUTES_USAGE[churn_data$TOT_MINUTES_USAGE > (minutesUpperQuantil
 
 ```
 
-## zScore Standardisation method
+zScore Standardisation method
 
 ```{r}
 # zScore Standardisation
@@ -866,7 +866,7 @@ TOT_MINUTES_USAGESkewness <- (3 * (mean(churn_data$TOT_MINUTES_USAGE) - median(c
 TOT_MINUTES_USAGESkewness
 ```
 
-## Natural Log Transformation
+Natural Log Transformation
 
 ```{r}
 # Natural Log Transformation
@@ -877,7 +877,7 @@ logTOT_MINUTES_USAGESkewness <- (3 * (mean(natlog.TOT_MINUTES_USAGE) - median(na
 logTOT_MINUTES_USAGESkewness
 ```
 
-## Square Root Transformation
+Square Root Transformation
 
 ```{r}
 # Square Root Transformation
@@ -888,7 +888,7 @@ sqrTOT_MINUTES_USAGESkewness <- (3 * (mean(sqrt.TOT_MINUTES_USAGE) - median(sqrt
 sqrTOT_MINUTES_USAGESkewness
 ```
 
-## zScore Standardisation
+zScore Standardisation
 
 ```{r}
 # zScore Standardisation
@@ -912,7 +912,7 @@ ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=CUST_MOS)) +
     geom_smooth(method=lm)
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$CUST_MOS, use="all.obs", method="pearson")
@@ -928,7 +928,7 @@ ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_CURR_MONTH)) +
 
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_CURR_MONTH, use="all.obs", method="pearson")
@@ -943,7 +943,7 @@ ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_PREV_MONTH)) +
     geom_smooth(method=lm)
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_PREV_MONTH, use="all.obs", method="pearson")
@@ -959,7 +959,7 @@ ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_3MONTHS_AGO)) +
 
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_3MONTHS_AGO, use="all.obs", method="pearson")
@@ -974,7 +974,7 @@ ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=NUM_LINES)) +
     geom_smooth(method=lm)
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
@@ -990,7 +990,7 @@ ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_CURR_MONTH)) +
 
 ```
 
-### Correlation
+Correlation
 
 ```{r}
 cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_CURR_MONTH, use="all.obs", method="pearson")
@@ -1004,7 +1004,7 @@ ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_PREV_MONTH)) +
     geom_point() +
     geom_smooth(method=lm)
 ```
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_PREV_MONTH, use="all.obs", method="pearson")
@@ -1020,7 +1020,7 @@ ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_3MONTHS_AGO)) +
     geom_smooth(method=lm)
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$CUST_MOS, y=churn_data$MINUTES_3MONTHS_AGO, use="all.obs", method="pearson")
@@ -1036,7 +1036,7 @@ ggplot(churn_data, aes(x=CUST_MOS, y=NUM_LINES)) +
 
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$CUST_MOS, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
@@ -1052,7 +1052,7 @@ ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=MINUTES_PREV_MONTH)) +
 
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$MINUTES_CURR_MONTH, y=churn_data$MINUTES_PREV_MONTH, use="all.obs", method="pearson")
@@ -1068,7 +1068,7 @@ ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=MINUTES_3MONTHS_AGO)) +
 
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$MINUTES_CURR_MONTH, y=churn_data$MINUTES_3MONTHS_AGO, use="all.obs", method="pearson")
@@ -1084,7 +1084,7 @@ ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=NUM_LINES)) +
 
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$MINUTES_CURR_MONTH, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
@@ -1100,7 +1100,7 @@ ggplot(churn_data, aes(x=MINUTES_PREV_MONTH, y=NUM_LINES)) +
 
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$MINUTES_PREV_MONTH, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
@@ -1116,7 +1116,7 @@ ggplot(churn_data, aes(x=MINUTES_PREV_MONTH, y=MINUTES_3MONTHS_AGO)) +
 
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
 cor(x=churn_data$MINUTES_PREV_MONTH, y=churn_data$MINUTES_3MONTHS_AGO, use="all.obs", method="pearson")
@@ -1131,14 +1131,19 @@ ggplot(churn_data, aes(x=MINUTES_3MONTHS_AGO, y=NUM_LINES)) +
     geom_smooth(method=lm)
 ```
 
-### Correlation 
+Correlation 
 
 ```{r}
-cor(x=churn_data$MINUTES_3MONTHS_AGO, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
 # http://www.statmethods.net/stats/correlations.html
+cor(x=churn_data$MINUTES_3MONTHS_AGO, y=churn_data$NUM_LINES, use="all.obs", method="pearson")
+
 ```
 
 
+
+```{r}
+write.csv(churn_data, file="./churn_data_preprocessed.csv")
+```
 
 
 
