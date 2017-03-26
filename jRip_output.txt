@@ -1,0 +1,67 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.rules.JRip -F 3 -N 2.0 -O 2 -S 1
+Relation:     churn_data_preprocessed-weka.filters.unsupervised.attribute.Remove-R1-2,4-6-weka.filters.unsupervised.attribute.NumericToNominal-R1,3,4,6,7-weka.filters.unsupervised.attribute.Normalize-S1.0-T0.0
+Instances:    2070
+Attributes:   14
+              AREA_CODE
+              CUST_MOS
+              LONGDIST_FLAG
+              CALLWAITING_FLAG
+              NUM_LINES
+              VOICEMAIL_FLAG
+              MOBILE_PLAN
+              CONVERGENT_BILLING
+              GENDER
+              INCOME
+              PHONE_PLAN
+              EDUCATION
+              TOT_MINUTES_USAGE
+              CHURNER
+Test mode:    split 66.0% train, remainder test
+
+=== Classifier model (full training set) ===
+
+JRIP rules:
+===========
+
+(CONVERGENT_BILLING = No) and (TOT_MINUTES_USAGE >= 0.00436) => CHURNER=no (690.0/200.0)
+(AREA_CODE = 55166) => CHURNER=no (90.0/0.0)
+(CUST_MOS <= 0.061224) => CHURNER=no (397.0/122.0)
+(TOT_MINUTES_USAGE <= 0.003698) and (CUST_MOS <= 0.204082) => CHURNER=no (82.0/28.0)
+(EDUCATION = PhD) and (TOT_MINUTES_USAGE <= 0.092281) and (INCOME = High Income) and (TOT_MINUTES_USAGE >= 0.053868) => CHURNER=no (60.0/10.0)
+(EDUCATION = PhD) and (AREA_CODE = 45987) => CHURNER=no (70.0/19.0)
+ => CHURNER=yes (681.0/10.0)
+
+Number of Rules : 7
+
+
+Time taken to build model: 0.23 seconds
+
+=== Evaluation on test split ===
+
+Time taken to test model on test split: 0.01 seconds
+
+=== Summary ===
+
+Correctly Classified Instances         561               79.6875 %
+Incorrectly Classified Instances       143               20.3125 %
+Kappa statistic                          0.599
+Mean absolute error                      0.2773
+Root mean squared error                  0.3848
+Relative absolute error                 55.4645 %
+Root relative squared error             76.9526 %
+Total Number of Instances              704
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.638    0.030    0.959      0.638    0.766      0.638    0.809     0.813     yes
+                 0.970    0.362    0.711      0.970    0.821      0.638    0.809     0.707     no
+Weighted Avg.    0.797    0.189    0.840      0.797    0.792      0.638    0.809     0.762
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 234 133 |   a = yes
+  10 327 |   b = no

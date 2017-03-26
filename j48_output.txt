@@ -1,0 +1,101 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.trees.J48 -C 0.25 -M 2
+Relation:     churn_data_preprocessed-weka.filters.unsupervised.attribute.Remove-R1-2,4-6-weka.filters.unsupervised.attribute.NumericToNominal-R1,3,4,6,7-weka.filters.unsupervised.attribute.Normalize-S1.0-T0.0
+Instances:    2070
+Attributes:   14
+              AREA_CODE
+              CUST_MOS
+              LONGDIST_FLAG
+              CALLWAITING_FLAG
+              NUM_LINES
+              VOICEMAIL_FLAG
+              MOBILE_PLAN
+              CONVERGENT_BILLING
+              GENDER
+              INCOME
+              PHONE_PLAN
+              EDUCATION
+              TOT_MINUTES_USAGE
+              CHURNER
+Test mode:    split 66.0% train, remainder test
+
+=== Classifier model (full training set) ===
+
+J48 pruned tree
+------------------
+
+CUST_MOS <= 0.877551
+|   CONVERGENT_BILLING = Yes
+|   |   AREA_CODE = 10040
+|   |   |   CUST_MOS <= 0.020408: no (90.0/24.0)
+|   |   |   CUST_MOS > 0.020408
+|   |   |   |   GENDER = M: no (50.0/24.0)
+|   |   |   |   GENDER = F: yes (10.0/3.0)
+|   |   AREA_CODE = 15563
+|   |   |   PHONE_PLAN = International
+|   |   |   |   INCOME = High Income
+|   |   |   |   |   TOT_MINUTES_USAGE <= 0.049452: yes (10.0)
+|   |   |   |   |   TOT_MINUTES_USAGE > 0.049452: no (60.0/10.0)
+|   |   |   |   INCOME = Medium Income: no (90.0/38.0)
+|   |   |   |   INCOME = Low Income: yes (10.0)
+|   |   |   PHONE_PLAN = National: yes (10.0)
+|   |   |   PHONE_PLAN = Promo_plan: no (0.0)
+|   |   |   PHONE_PLAN = Euro-Zone: no (0.0)
+|   |   AREA_CODE = 21750: yes (200.0)
+|   |   AREA_CODE = 36785: yes (120.0)
+|   |   AREA_CODE = 45987: yes (90.0)
+|   |   AREA_CODE = 55166: no (90.0)
+|   CONVERGENT_BILLING = No
+|   |   EDUCATION = Masters: no (120.0/32.0)
+|   |   EDUCATION = Bachelors
+|   |   |   VOICEMAIL_FLAG = 0: yes (90.0)
+|   |   |   VOICEMAIL_FLAG = 1: no (111.0/41.0)
+|   |   EDUCATION = High School: no (2.0)
+|   |   EDUCATION = Post Primary
+|   |   |   CUST_MOS <= 0.326531: no (427.0/125.0)
+|   |   |   CUST_MOS > 0.326531
+|   |   |   |   AREA_CODE = 10040: yes (0.0)
+|   |   |   |   AREA_CODE = 15563: yes (0.0)
+|   |   |   |   AREA_CODE = 21750: yes (70.0/10.0)
+|   |   |   |   AREA_CODE = 36785: no (50.0/13.0)
+|   |   |   |   AREA_CODE = 45987: yes (0.0)
+|   |   |   |   AREA_CODE = 55166: yes (0.0)
+|   |   EDUCATION = PhD: no (280.0/56.0)
+|   |   EDUCATION = Primary: no (0.0)
+CUST_MOS > 0.877551: yes (90.0)
+
+Number of Leaves  : 	28
+
+Size of the tree : 	40
+
+
+Time taken to build model: 0.02 seconds
+
+=== Evaluation on test split ===
+
+Time taken to test model on test split: 0 seconds
+
+=== Summary ===
+
+Correctly Classified Instances         565               80.2557 %
+Incorrectly Classified Instances       139               19.7443 %
+Kappa statistic                          0.6099
+Mean absolute error                      0.2643
+Root mean squared error                  0.3802
+Relative absolute error                 52.8582 %
+Root relative squared error             76.0351 %
+Total Number of Instances              704
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.651    0.033    0.956      0.651    0.775      0.646    0.843     0.872     yes
+                 0.967    0.349    0.718      0.967    0.824      0.646    0.843     0.785     no
+Weighted Avg.    0.803    0.184    0.842      0.803    0.798      0.646    0.843     0.830
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 239 128 |   a = yes
+  11 326 |   b = no

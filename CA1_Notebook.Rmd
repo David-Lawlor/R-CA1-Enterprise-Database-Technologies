@@ -274,7 +274,7 @@ summary(churn_data)
 
 
 ```{r}
-churn_data$INCOME <- cut(churn_data$INCOME, breaks=c(0,38000,88000,Inf), right = FALSE, labels=c("low income","medium income","high income"))
+churn_data$INCOME <- cut(churn_data$INCOME, breaks=c(0,38000,88000,Inf), right = FALSE, labels=c("Low Income","Medium Income","High Income"))
 ```
 
 # Predictor Information
@@ -844,6 +844,8 @@ churn_data$TOT_MINUTES_USAGE[churn_data$TOT_MINUTES_USAGE < (minutesLowerQuantil
 print("upper outliers")
 churn_data$TOT_MINUTES_USAGE[churn_data$TOT_MINUTES_USAGE > (minutesUpperQuantile + minutesQuartileTolerance)]
 
+length(churn_data$TOT_MINUTES_USAGE[churn_data$TOT_MINUTES_USAGE > (minutesUpperQuantile + minutesQuartileTolerance)])
+
 ```
 
 zScore Standardisation method
@@ -856,6 +858,9 @@ summary(zscore.TOT_MINUTES_USAGE)
 
 ```{r}
 zscore.TOT_MINUTES_USAGE[zscore.TOT_MINUTES_USAGE < -3 | zscore.TOT_MINUTES_USAGE > 3]
+
+length(zscore.TOT_MINUTES_USAGE[zscore.TOT_MINUTES_USAGE < -3 | zscore.TOT_MINUTES_USAGE > 3])
+
 ```
 
 # Correcting skewness
@@ -907,7 +912,7 @@ zscore.TOT_MINUTES_USAGE
 ## TOT_MINUTES_USAGE vs CUST_MOS
 
 ```{r}
-ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=CUST_MOS)) +
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=CUST_MOS, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 ```
@@ -922,7 +927,7 @@ cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$CUST_MOS, use="all.obs", method
 ## TOT_MINUTES_USAGE vs MINUTES_CURR_MONTH
 
 ```{r}
-ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_CURR_MONTH)) +
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_CURR_MONTH, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 
@@ -938,7 +943,7 @@ cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_CURR_MONTH, use="all.ob
 ## TOT_MINUTES_USAGE vs MINUTES_PREV_MONTH
 
 ```{r}
-ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_PREV_MONTH)) +
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_PREV_MONTH, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 ```
@@ -953,7 +958,7 @@ cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_PREV_MONTH, use="all.ob
 ## TOT_MINUTES_USAGE vs MINUTES_3MONTHS_AGO
 
 ```{r}
-ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_3MONTHS_AGO)) +
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=MINUTES_3MONTHS_AGO, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 
@@ -969,7 +974,7 @@ cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_3MONTHS_AGO, use="all.o
 ## TOT_MINUTES_USAGE vs NUM_LINES
 
 ```{r}
-ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=NUM_LINES)) +
+ggplot(churn_data, aes(x=TOT_MINUTES_USAGE, y=NUM_LINES, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 ```
@@ -984,7 +989,7 @@ cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$NUM_LINES, use="all.obs", metho
 ## CUST_MOS vs MINUTES_CURR_MONTH
 
 ```{r}
-ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_CURR_MONTH)) +
+ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_CURR_MONTH, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 
@@ -1000,7 +1005,7 @@ cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_CURR_MONTH, use="all.ob
 ## CUST_MOS vs MINUTES_PREV_MONTH
 
 ```{r}
-ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_PREV_MONTH)) +
+ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_PREV_MONTH, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 ```
@@ -1015,7 +1020,7 @@ cor(x=churn_data$TOT_MINUTES_USAGE, y=churn_data$MINUTES_PREV_MONTH, use="all.ob
 ## CUST_MOS vs MINUTES_3MONTHS_AGO
 
 ```{r}
-ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_3MONTHS_AGO)) +
+ggplot(churn_data, aes(x=CUST_MOS, y=MINUTES_3MONTHS_AGO, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 ```
@@ -1030,7 +1035,7 @@ cor(x=churn_data$CUST_MOS, y=churn_data$MINUTES_3MONTHS_AGO, use="all.obs", meth
 ## CUST_MOS vs NUM_LINES
 
 ```{r}
-ggplot(churn_data, aes(x=CUST_MOS, y=NUM_LINES)) +
+ggplot(churn_data, aes(x=CUST_MOS, y=NUM_LINES, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 
@@ -1046,7 +1051,7 @@ cor(x=churn_data$CUST_MOS, y=churn_data$NUM_LINES, use="all.obs", method="pearso
 ## MINUTES_CURR_MONTH vs MINUTES_PREV_MONTH
 
 ```{r}
-ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=MINUTES_PREV_MONTH)) +
+ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=MINUTES_PREV_MONTH, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 
@@ -1062,7 +1067,7 @@ cor(x=churn_data$MINUTES_CURR_MONTH, y=churn_data$MINUTES_PREV_MONTH, use="all.o
 ## MINUTES_CURR_MONTH vs MINUTES_3MONTHS_AGO
 
 ```{r}
-ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=MINUTES_3MONTHS_AGO)) +
+ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=MINUTES_3MONTHS_AGO, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 
@@ -1078,7 +1083,7 @@ cor(x=churn_data$MINUTES_CURR_MONTH, y=churn_data$MINUTES_3MONTHS_AGO, use="all.
 ## MINUTES_CURR_MONTH vs NUM_LINES
 
 ```{r}
-ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=NUM_LINES)) +
+ggplot(churn_data, aes(x=MINUTES_CURR_MONTH, y=NUM_LINES, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 
@@ -1094,7 +1099,7 @@ cor(x=churn_data$MINUTES_CURR_MONTH, y=churn_data$NUM_LINES, use="all.obs", meth
 ## MINUTES_PREV_MONTH vs NUM_LINES
 
 ```{r}
-ggplot(churn_data, aes(x=MINUTES_PREV_MONTH, y=NUM_LINES)) +
+ggplot(churn_data, aes(x=MINUTES_PREV_MONTH, y=NUM_LINES, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 
@@ -1110,7 +1115,7 @@ cor(x=churn_data$MINUTES_PREV_MONTH, y=churn_data$NUM_LINES, use="all.obs", meth
 ## MINUTES_PREV_MONTH vs MINUTES_3MONTHS_AGO
 
 ```{r}
-ggplot(churn_data, aes(x=MINUTES_PREV_MONTH, y=MINUTES_3MONTHS_AGO)) +
+ggplot(churn_data, aes(x=MINUTES_PREV_MONTH, y=MINUTES_3MONTHS_AGO, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 
@@ -1126,7 +1131,7 @@ cor(x=churn_data$MINUTES_PREV_MONTH, y=churn_data$MINUTES_3MONTHS_AGO, use="all.
 ## MINUTES_3MONTHS_AGO vs NUM_LINES
 
 ```{r}
-ggplot(churn_data, aes(x=MINUTES_3MONTHS_AGO, y=NUM_LINES)) +
+ggplot(churn_data, aes(x=MINUTES_3MONTHS_AGO, y=NUM_LINES, col=CHURNER)) +
     geom_point() +
     geom_smooth(method=lm)
 ```
@@ -1146,9 +1151,28 @@ write.csv(churn_data, file="./churn_data_preprocessed.csv")
 ```
 
 
+```{r}
+ggplot(data=churn_data, aes(x=MINUTES_3MONTHS_AGO)) + geom_density(adjust=1, fill="#4F81BD") + ggtitle("Minutes Talked (3 Months ago)") + xlab("Minutes") + ylab("Customers")
+```
 
+```{r}
+ggplot(data=churn_data, aes(x=MINUTES_PREV_MONTH)) + geom_density(adjust=1, fill="#4F81BD") + ggtitle("Minutes Talked (Previous Month)") + xlab("Minutes") + ylab("Customers")
+```
 
+```{r}
+ggplot(data=churn_data, aes(x=MINUTES_CURR_MONTH)) + geom_density(adjust=1, fill="#4F81BD") + ggtitle("Minutes Talked (Current Month)") + xlab("Minutes") + ylab("Customers")
+```
 
+```{r}
+ggplot(data=churn_data, aes(x=TOT_MINUTES_USAGE)) + geom_density(adjust=1, fill="#4F81BD") + ggtitle("Minutes Talked Total") + xlab("Minutes") + ylab("Customers")
+```
 
+```{r}
+ggplot(data=churn_data, aes(x=CUST_MOS)) + geom_density(adjust=1, fill="#4F81BD") + ggtitle("Number of months") + xlab("Minutes") + ylab("Customers")
+```
+
+```{r}
+ggplot(data=churn_data, aes(x=NUM_LINES)) + geom_density(adjust=1, fill="#4F81BD") + ggtitle("Number of lines ") + xlab("Number of lines") + ylab("Customers")
+```
 
 

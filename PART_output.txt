@@ -1,0 +1,110 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.rules.PART -M 2 -C 0.25 -Q 1
+Relation:     churn_data_preprocessed-weka.filters.unsupervised.attribute.Remove-R1-2,4-6-weka.filters.unsupervised.attribute.NumericToNominal-R1,3,4,6,7-weka.filters.unsupervised.attribute.Normalize-S1.0-T0.0
+Instances:    2070
+Attributes:   14
+              AREA_CODE
+              CUST_MOS
+              LONGDIST_FLAG
+              CALLWAITING_FLAG
+              NUM_LINES
+              VOICEMAIL_FLAG
+              MOBILE_PLAN
+              CONVERGENT_BILLING
+              GENDER
+              INCOME
+              PHONE_PLAN
+              EDUCATION
+              TOT_MINUTES_USAGE
+              CHURNER
+Test mode:    split 66.0% train, remainder test
+
+=== Classifier model (full training set) ===
+
+PART decision list
+------------------
+
+CUST_MOS <= 0.877551 AND
+CONVERGENT_BILLING = Yes AND
+AREA_CODE = 21750: yes (200.0)
+
+CUST_MOS <= 0.877551 AND
+EDUCATION = Primary: yes (90.0)
+
+CUST_MOS > 0.877551: yes (90.0)
+
+TOT_MINUTES_USAGE > 0.22753 AND
+CONVERGENT_BILLING = Yes: yes (70.0/3.0)
+
+PHONE_PLAN = National AND
+INCOME = Low Income: no (270.0/80.0)
+
+EDUCATION = PhD AND
+TOT_MINUTES_USAGE > 0.002622 AND
+INCOME = High Income AND
+TOT_MINUTES_USAGE <= 0.049452 AND
+MOBILE_PLAN = 0: no (170.0/48.0)
+
+PHONE_PLAN = Promo_plan: no (260.0/44.0)
+
+CUST_MOS <= 0.040816 AND
+AREA_CODE = 45987: no (89.0)
+
+AREA_CODE = 45987 AND
+CUST_MOS <= 0.530612: yes (161.0/1.0)
+
+INCOME = High Income AND
+EDUCATION = Post Primary: no (130.0/36.0)
+
+INCOME = High Income AND
+TOT_MINUTES_USAGE > 0.049452: no (70.0/13.0)
+
+CUST_MOS > 0.326531 AND
+PHONE_PLAN = International: yes (90.0/10.0)
+
+INCOME = Medium Income AND
+GENDER = F: no (180.0/60.0)
+
+INCOME = Medium Income AND
+PHONE_PLAN = International: no (90.0/38.0)
+
+AREA_CODE = 36785: no (30.0/6.0)
+
+PHONE_PLAN = National AND
+EDUCATION = PhD: no (20.0/9.0)
+
+: no (60.0/29.0)
+
+Number of Rules  : 	17
+
+
+Time taken to build model: 0.21 seconds
+
+=== Evaluation on test split ===
+
+Time taken to test model on test split: 0.02 seconds
+
+=== Summary ===
+
+Correctly Classified Instances         567               80.5398 %
+Incorrectly Classified Instances       137               19.4602 %
+Kappa statistic                          0.6147
+Mean absolute error                      0.2566
+Root mean squared error                  0.3732
+Relative absolute error                 51.3241 %
+Root relative squared error             74.6475 %
+Total Number of Instances              704
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.678    0.056    0.929      0.678    0.784      0.640    0.847     0.870     yes
+                 0.944    0.322    0.729      0.944    0.823      0.640    0.847     0.787     no
+Weighted Avg.    0.805    0.183    0.833      0.805    0.803      0.640    0.847     0.830
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 249 118 |   a = yes
+  19 318 |   b = no
