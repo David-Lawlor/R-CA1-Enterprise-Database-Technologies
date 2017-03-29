@@ -294,6 +294,7 @@ Unique Account Number that identifies an account holder
 +-------------------+-------------------------------------------+
 
 
+
 ## AREA_CODE
 
 Geographical area account holder resides
@@ -428,8 +429,8 @@ ggplot(data=plot_data, aes(x = CONVERGENT_BILLING, y = Count, fill = Churned, la
   geom_text(size = 3, position = position_stack(vjust = 0.5))
 ```
 
-## GENDER
 
+## GENDER
 Account holder's gender
 
 +-------------------+-------------------------------------------+
